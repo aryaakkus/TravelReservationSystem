@@ -78,4 +78,32 @@ public class RMIResourceManager extends ResourceManager
 	{
 		super(name);
 	}
+
+	@Override
+	protected boolean reserveItem(int xid, int customerID, String key, String location)
+	{
+		
+		// Check if the item is available
+		ReservableItem item = (ReservableItem)readData(xid, key);
+		if (item == null)
+		{
+			Trace.warn("RM::reserveItem(" + xid + ", " + customerID + ", " + key + ", " + location + ") failed--item doesn't exist");
+			return false;
+		}
+		else if (item.getCount() == 0)
+		{
+			Trace.warn("RM::reserveItem(" + xid + ", " + customerID + ", " + key + ", " + location + ") failed--No more items");
+			return false;
+		}
+		else
+		{            
+			// Decrease the number of available items in the storage
+			item.setCount(item.getCount() - 1);
+			item.setReserved(item.getReserved() + 1);
+			writeData(xid, item.getKey(), item);
+
+			Trace.info("RM::reserveItem(" + xid + ", " + customerID + ", " + key + ", " + location + ") succeeded");
+			return true;
+		}        
+	}
 }

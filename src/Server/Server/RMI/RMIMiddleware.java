@@ -73,11 +73,186 @@ public class RMIMiddleware extends ResourceManager
 		return true;
 	}
 
+	@Override
+	public int queryFlight(int xid, int flightNum) throws RemoteException{
+		System.out.println("Middleware connected to Flights server to query flights.");
+		return flightManager.queryFlight(xid, flightNum);
+		
+	}
+
+	@Override
+	public int queryCars(int xid, String location) throws RemoteException
+	{
+		System.out.println("Middleware connected to Cars server to query cars.");
+		return carManager.queryCars(xid, location);
+	}
+	@Override
+	public int queryRooms(int xid, String location) throws RemoteException
+	{
+		System.out.println("Middleware connected to Rooms server to query rooms.");
+		return roomManager.queryRooms(xid, location);
+	}
+	@Override
+	public int queryFlightPrice(int xid, int flightNum) throws RemoteException{
+		System.out.println("Middleware connected to Flights server to query flight price.");
+		return flightManager.queryFlightPrice(xid, flightNum);
+		
+	}
+	@Override
+	public int queryCarsPrice(int xid, String location) throws RemoteException
+	{
+		System.out.println("Middleware connected to Cars server to query cars price.");
+		return carManager.queryCarsPrice(xid, location);
+	}
+	@Override
+	public int queryRoomsPrice(int xid, String location) throws RemoteException
+	{
+		System.out.println("Middleware connected to Rooms server to query rooms price.");
+		return roomManager.queryRoomsPrice(xid, location);
+	}
+	@Override
+	public boolean reserveFlight(int xid, int customerID, int flightNum) throws RemoteException
+	{        
+		// Read customer object if it exists (and read lock it)
+		Customer customer = (Customer)readData(xid, Customer.getKey(customerID));
+		if (customer == null)
+		{
+			Trace.warn("RM::reserveItem(" + xid + ", " + customerID + ")  failed--customer doesn't exist");
+			return false;
+		}   
+		else
+		{
+			boolean b = flightManager.reserveFlight(xid, customerID, flightNum);
+			if(b)
+			{
+				// if item was successfully  reserved, reserve it for customer
+				customer.reserve(Flight.getKey(flightNum),String.valueOf(flightNum),flightManager.queryFlightPrice(xid, flightNum));        
+				writeData(xid, customer.getKey(), customer);
+				return true;
+				
+			}
+			return false;
+		}     
+	}
+
+	@Override 
+	public boolean reserveCar(int xid, int customerID, String location) throws RemoteException{
+		// Read customer object if it exists (and read lock it)
+		Customer customer = (Customer)readData(xid, Customer.getKey(customerID));
+		if (customer == null)
+		{
+			Trace.warn("RM::reserveItem(" + xid + ", " + customerID + ")  failed--customer doesn't exist");
+			return false;
+		}   
+		else
+		{
+			boolean b = carManager.reserveCar(xid, customerID, location);
+			if(b)
+			{
+				customer.reserve(Car.getKey(location), location, carManager.queryCarsPrice(xid, location));
+				writeData(xid, customer.getKey(), customer);
+				return true;
+				
+			}
+			return false;
+		}
+			
+	}
 
 
+	@Override 
+	public boolean reserveRoom(int xid, int customerID, String location) throws RemoteException
+	{
+		// Read customer object if it exists (and read lock it)
+		Customer customer = (Customer)readData(xid, Customer.getKey(customerID));
+		if (customer == null)
+		{
+			Trace.warn("RM::reserveItem(" + xid + ", " + customerID + ")  failed--customer doesn't exist");
+			return false;
+		}   
+		else
+		{
+			boolean b = roomManager.reserveRoom(xid, customerID, location);
+			if(b)
+			{
+				customer.reserve(Room.getKey(location), location, roomManager.queryRoomsPrice(xid, location));
+				writeData(xid, customer.getKey(), customer);
+				return true;
+				
+			}
+			return false;
+		}
+	}
+
+	@Override
+	public boolean bundle(int xid, int customerId, Vector<String> flightNumbers, String location, boolean car, boolean room) throws RemoteException
+	{
+		boolean reservable = false;
+		for(int index = 0; index < flightNumbers.size(); index++) {
+			reservable= (flightManager.queryFlight(xid, Integer.valueOf(flightNumbers.get(index))) > 0);
+			if(!reservable)
+			{
+				break;
+			}
+				
+		}
+		
+		if(reservable)
+		{
+			for(int index = 0; index < flightNumbers.size(); index++)
+			{
+				reserveFlight(xid, customerId,  Integer.valueOf(flightNumbers.get(index)));
+			}
+
+			if(car && carManager.queryCars(xid, location)>0)
+			{
+				reserveCar(xid, customerId, location);
+			}
+
+			if(room && roomManager.queryRooms(xid, location)>0)
+			{
+				reserveRoom(xid, customerId, location);
+			}
+
+			return true;
+		}
+		else{
+			return false;
+		}
+		
+	}
+
+	@Override
+	public boolean deleteCustomer(int xid, int customerID) throws RemoteException
+	{
+		Customer customer = (Customer)readData(xid, Customer.getKey(customerID));
+		if (customer == null)
+		{
+			Trace.warn("RM::deleteCustomer(" + xid + ", " + customerID + ") failed--customer doesn't exist");
+			return false;
+		}
+		else
+		{
+			RMHashMap reservations = customer.getReservations();
+			for (String reservedKey : reservations.keySet())
+			{        
+				if()
+				// ReservedItem reserveditem = customer.getReservedItem(reservedKey);
+				// Trace.info("RM::deleteCustomer(" + xid + ", " + customerID + ") has reserved " + reserveditem.getKey() + " " +  reserveditem.getCount() +  " times");
+				// ReservableItem item  = (ReservableItem)readData(xid, reserveditem.getKey());
+				// Trace.info("RM::deleteCustomer(" + xid + ", " + customerID + ") has reserved " + reserveditem.getKey() + " which is reserved " +  item.getReserved() +  " times and is still available " + item.getCount() + " times");
+				// item.setReserved(item.getReserved() - reserveditem.getCount());
+				// item.setCount(item.getCount() + reserveditem.getCount());
+				// writeData(xid, item.getKey(), item);
+			}
+			removeData(xid, customer.getKey());
+			Trace.info("RM::deleteCustomer(" + xid + ", " + customerID + ") succeeded");
+			return true;
+			
+		}
+	}
 
 
-	
 
     public static IResourceManager connectServer(String server, int port, String name)
 	{
