@@ -582,9 +582,14 @@ public class TCPClient extends Client {
         return result.toString();
     }
 
-    private String readInput() throws IOException {
-        Scanner scan1 = new Scanner(this.socket.getInputStream());
-        // scan.close();
-        return scan1.nextLine();
+    private String readInput() {
+        try {
+            Scanner scan1 = new Scanner(this.socket.getInputStream());
+            // scan.close();
+            return scan1.nextLine();
+
+        } catch (Exception e) {
+            return "";
+        }
     }
 }
