@@ -11,7 +11,7 @@ public class TCPClient extends Client {
     private static int s_serverPort = 3031;
     private PrintWriter out;
     private Socket socket;
-    private static String s_rmiPrefix = "group_31_";
+    // private static String s_rmiPrefix = "group_31_";
 
     public static void main(String args[]) {
         if (args.length > 0) {
