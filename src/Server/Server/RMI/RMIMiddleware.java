@@ -14,17 +14,15 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class RMIMiddleware extends ResourceManager {
 	private static String s_serverName = "Middleware";
-	// TODO: ADD YOUR GROUP NUMBER TO COMPLETE
 	private static String s_rmiPrefix = "group_31_";
+	private static String flights_servername = "Flights";
+	private static String car_servername = "Cars";
+	private static String rooms_servername = "Rooms";
 
 	// add three different resource managers as attributes
 	private static IResourceManager carManager = null;
 	private static IResourceManager flightManager = null;
 	private static IResourceManager roomManager = null;
-
-	private static String flight_host_name = Const.REGISTRY_HOST_NAME;
-	private static String car_host_name = Const.REGISTRY_HOST_NAME;
-	private static String room_host_name = Const.REGISTRY_HOST_NAME;
 
 	// calls addFlight on the flightmanager s
 	@Override
@@ -375,17 +373,16 @@ public class RMIMiddleware extends ResourceManager {
 	// connect three servers to middleware
 	public static void connectServers() {
 		// all connect to same registry
-		flightManager = connectServer(flight_host_name, Const.REGISTRY_PORT, Const.FLIGHT_SERVER_NAME);
-		carManager = connectServer(car_host_name, Const.REGISTRY_PORT, Const.CAR_SERVER_NAME);
-		roomManager = connectServer(room_host_name, Const.REGISTRY_PORT, Const.ROOM_SERVER_NAME);
+		flightManager = connectServer(Const.REGISTRY_HOST_NAME, Const.REGISTRY_PORT, Const.FLIGHT_SERVER_NAME);
+		carManager = connectServer(Const.REGISTRY_HOST_NAME, Const.REGISTRY_PORT, Const.CAR_SERVER_NAME);
+		roomManager = connectServer(Const.REGISTRY_HOST_NAME, Const.REGISTRY_PORT, Const.ROOM_SERVER_NAME);
 	}
 
 	public static void main(String args[]) {
-
-		if (args.length > 2) {
-			flight_host_name = args[0];
-			car_host_name = args[1];
-			room_host_name = args[2];
+		if (args.length >= 3) {
+			flights_servername = args[0];
+			car_servername = args[1];
+			rooms_servername = args[2];
 		}
 
 		// Create the RMI server entry
@@ -428,10 +425,9 @@ public class RMIMiddleware extends ResourceManager {
 		}
 
 		// Create and install a security manager
-		// if (System.getSecurityManager() == null)
-		// {
-		// System.setSecurityManager(new SecurityManager());
-		// }
+		if (System.getSecurityManager() == null) {
+			System.setSecurityManager(new SecurityManager());
+		}
 	}
 
 	public RMIMiddleware(String name) {
