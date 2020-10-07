@@ -8,7 +8,6 @@ import java.util.concurrent.Executors;
 import java.io.*;
 import java.net.*;
 
-
 public class TCPResourceManager extends ResourceManager {
     private ServerSocket serverSocket;
     private static String s_serverHost = "localhost";
@@ -21,6 +20,9 @@ public class TCPResourceManager extends ResourceManager {
         if (args.length > 1) {
             s_serverName = args[0];
             s_serverPort = Integer.parseInt(args[1]);
+        } else {
+            System.out.println("Not enough arguments for TCPResourceManager!");
+            System.exit(0);
         }
         TCPResourceManager server = new TCPResourceManager(s_serverName);
         try {
