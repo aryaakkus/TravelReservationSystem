@@ -45,14 +45,130 @@ class HandleRequest implements Runnable {
 
             System.out.println(Arrays.toString(tokenized));
 
-            cmd = tokenized[0].substring(tokenized[0].indexOf('=') + 1);
+            cmd = (tokenized[0].substring(tokenized[0].indexOf('=') + 1)).toLowerCase();
             System.out.println(cmd);
             for (int i = 1; i < tokenized.length; i++) {
                 arguments.add(tokenized[i].substring(tokenized[i].indexOf('=') + 1));
             }
 
+            execute(cmd, arguments);
+
         } catch (IndexOutOfBoundsException e) {
             System.out.println("Cannot decode the query!");
+        }
+
+    }
+
+    private void execute(String cmd, Vector<String> arguments) {
+        cmd = cmd.toLowerCase();
+
+        switch (cmd) {
+            case "addflight": {
+                checkArgumentsCount(4, arguments.size());
+                int id = toInt(arguments.elementAt(0));
+                int flightNum = toInt(arguments.elementAt(1));
+                int flightSeats = toInt(arguments.elementAt(2));
+                int flightPrice = toInt(arguments.elementAt(3));
+
+                rm.addFlight(id, flightNum, flightSeats, flightPrice);
+                break;
+            }
+            case "addrooms": {
+                checkArgumentsCount(4, arguments.size());
+                int id = toInt(arguments.elementAt(0));
+                String location = arguments.elementAt(1);
+                int numRooms = toInt(arguments.elementAt(2));
+                int price = toInt(arguments.elementAt(3));
+
+                rm.addRooms(id, location, numRooms, price);
+                break;
+            }
+
+            case "addcustomer": {
+                checkArgumentsCount(1, arguments.size());
+                int id = toInt(arguments.elementAt(0));
+                try {
+                    int customer = rm.newCustomer(id);
+                    break;
+                } catch (Exception e) {
+                    break;
+                }
+            }
+
+            case "addcustomerid": {
+                checkArgumentsCount(2, arguments.size());
+                int id = toInt(arguments.elementAt(0));
+                int cid = toInt(arguments.elementAt(1));
+
+                try {
+                    rm.newCustomer(id, cid);
+                    break;
+                } catch (Exception e) {
+                    break;
+                }
+
+            }
+
+            case "deleteflight": {
+
+            }
+
+            case "deletecars": {
+
+            }
+
+            case "deleterooms": {
+
+            }
+
+            case "deletecustomer": {
+
+            }
+
+            case "queryflight": {
+
+            }
+
+            case "querycars": {
+
+            }
+
+            case "queryrooms": {
+
+            }
+
+            case "querycustomer": {
+
+            }
+
+            case "queryflightprice": {
+
+            }
+
+            case "querycarsprice": {
+
+            }
+
+            case "queryroomsprice": {
+
+            }
+
+            case "reserveflight": {
+
+            }
+
+            case "reservecar": {
+
+            }
+
+            case "reserveroom": {
+
+            }
+
+            case "bundle": {
+
+            }
+
         }
 
     }
@@ -63,6 +179,22 @@ class HandleRequest implements Runnable {
         } catch (Exception e) {
             return "";
         }
+    }
+
+    public static void checkArgumentsCount(Integer expected, Integer actual) throws IllegalArgumentException {
+        if (expected != actual) {
+            throw new IllegalArgumentException("Invalid number of arguments. Expected " + (expected - 1) + ", received "
+                    + (actual - 1) + ". Location \"help,<CommandName>\" to check usage of this command");
+        }
+    }
+
+    public static int toInt(String string) throws NumberFormatException {
+        return (Integer.valueOf(string)).intValue();
+    }
+
+    public static boolean toBoolean(String string)// throws Exception
+    {
+        return (Boolean.valueOf(string)).booleanValue();
     }
 }
 

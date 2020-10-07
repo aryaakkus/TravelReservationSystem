@@ -19,10 +19,10 @@ public class TCPClient extends Client {
         }
 
         if (args.length > 1) {
-            System.err.println((char) 27 + "[31;1mClient exception: " + (char) 27
-                    + "[0mUsage: java client.TCPClient [server_hostname [server_rmiobject]]");
-            System.exit(1);
+            s_serverHost = args[0];
+            s_serverPort = toInt(args[1]);
         }
+
         try {
             TCPClient client = new TCPClient();
             client.connectServer();
@@ -44,8 +44,7 @@ public class TCPClient extends Client {
         try (Socket socket = new Socket(server, port)) {
             this.socket = socket;
 
-            PrintWriter out = new PrintWriter(socket.getOutputStream());
-            this.out = out;
+            out = new PrintWriter(socket.getOutputStream());
 
         } catch (Exception ex) {
 
@@ -127,7 +126,9 @@ public class TCPClient extends Client {
                 }
                 break;
             }
-            case AddRooms: {
+            case AddRooms:
+
+            {
                 checkArgumentsCount(5, arguments.size());
 
                 System.out.println("Adding new rooms [xid=" + arguments.elementAt(1) + "]");
@@ -558,6 +559,7 @@ public class TCPClient extends Client {
                 break;
             }
             case Quit:
+
                 checkArgumentsCount(1, arguments.size());
 
                 System.out.println("Quitting client");
