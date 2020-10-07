@@ -348,7 +348,7 @@ public class RMIMiddleware extends ResourceManager {
 			boolean first = true;
 			while (true) {
 				try {
-					Registry registry = LocateRegistry.getRegistry(server, port);
+					Registry registry = LocateRegistry.getRegistry(port);
 					IResourceManager resourceManager = (IResourceManager) registry.lookup(s_rmiPrefix + name);
 					System.out.println("Connected to '" + name + "' server [" + server + ":" + port + "/" + s_rmiPrefix
 							+ name + "]");
