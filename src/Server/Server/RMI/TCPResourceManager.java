@@ -66,17 +66,6 @@ class HandleRequest implements Runnable {
     }
 }
 
-// class TCPServer {
-// private ResourceManager rm;
-
-// public TCPServer(ResourceManager rm, int port) {
-// this.rm = rm;
-// try {
-// Server server = new
-// }
-// }
-// }
-
 public class TCPResourceManager extends ResourceManager {
     private ServerSocket serverSocket;
     private static String s_serverHost = "localhost";
@@ -89,6 +78,9 @@ public class TCPResourceManager extends ResourceManager {
         if (args.length > 1) {
             s_serverName = args[0];
             s_serverPort = Integer.parseInt(args[1]);
+        } else {
+            System.out.println("Not enough arguments for TCPResourceManager!");
+            System.exit(0);
         }
         TCPResourceManager server = new TCPResourceManager(s_serverName);
         try {
