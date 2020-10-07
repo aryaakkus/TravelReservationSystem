@@ -39,7 +39,6 @@ public class TCPResourceManager extends ResourceManager {
 
     public TCPResourceManager(String p_name) {
         super(p_name);
-
     }
 
 }

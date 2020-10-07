@@ -10,16 +10,16 @@ import java.net.*;
 
 class HandleRequest implements Runnable {
     private Socket socket;
-    private ResourceManager rm;
+    private static ResourceManager rm;
     private Scanner in;
-    private PrintWriter out;
+    private static PrintWriter out;
 
     public HandleRequest(Socket socket, ResourceManager rm) {
         this.socket = socket;
         this.rm = rm;
         try {
             this.in = new Scanner(socket.getInputStream());
-            this.out = new PrintWriter(socket.getOutputStream());
+            this.out = new PrintWriter(socket.getOutputStream(), true);
             this.run();
         } catch (Exception e) {
             // TODO: kill just thread
@@ -33,7 +33,6 @@ class HandleRequest implements Runnable {
         String query = readLineFromSocket();
         // command=addflights&xid=1&location=mtl&flightnum=1&numseats=2&price=100
         decodeQuery(query);
-
     }
 
     private static void decodeQuery(String query) {
@@ -59,7 +58,7 @@ class HandleRequest implements Runnable {
 
     }
 
-    private void execute(String cmd, Vector<String> arguments) {
+    private static void execute(String cmd, Vector<String> arguments) {
         cmd = cmd.toLowerCase();
 
         switch (cmd) {
@@ -70,7 +69,8 @@ class HandleRequest implements Runnable {
                 int flightSeats = toInt(arguments.elementAt(2));
                 int flightPrice = toInt(arguments.elementAt(3));
                 //TODO : sent result to middleware
-                boolean result = rm.addFlight(id, flightNum, flightSeats, flightPrice);
+                Boolean result = rm.addFlight(id, flightNum, flightSeats, flightPrice);
+                out.println(result.toString());
                 break;
             }
             case "addrooms": {
@@ -80,7 +80,8 @@ class HandleRequest implements Runnable {
                 int numRooms = toInt(arguments.elementAt(2));
                 int price = toInt(arguments.elementAt(3));
 
-                boolean result = rm.addRooms(id, location, numRooms, price);
+                Boolean result = rm.addRooms(id, location, numRooms, price);
+                out.println(result.toString());
                 break;
             }
 
@@ -115,30 +116,38 @@ class HandleRequest implements Runnable {
                 int id = toInt(arguments.elementAt(0));
                 int flightNum = toInt(arguments.elementAt(1));
                 //TODO : sent result to middleware
-                boolean result = rm.deleteFlight(id, flightNum);
+                Boolean result = rm.deleteFlight(id, flightNum);
+                out.println(result.toString());
                 break;
             }
 
             case "deletecars": {
                 checkArgumentsCount(2, arguments.size());
                 int id = toInt(arguments.elementAt(0));
-                String location = toInt(arguments.elementAt(1));
+                String location =arguments.elementAt(1);
                 //TODO : sent result to middleware
-                boolean result = rm.deleteCars(id, location);
+                Boolean result = rm.deleteCars(id, location);
+                out.println(result.toString());
                 break;
             }
 
             case "deleterooms": {
                 checkArgumentsCount(2, arguments.size());
                 int id = toInt(arguments.elementAt(0));
-                String location = toInt(arguments.elementAt(1));
+                String location = arguments.elementAt(1);
                 //TODO : sent result to middleware
-                boolean result = rm.deleteRooms(id, location);
+                Boolean result = rm.deleteRooms(id, location);
+                out.println(result.toString());
                 break;
             }
 
             case "deletecustomer": {
-
+                checkArgumentsCount(2, arguments.size());
+                int id = toInt(arguments.elementAt(0));
+				int customerID = toInt(arguments.elementAt(1));
+				Boolean result = rm.deleteCustomer(id, customerID);
+                out.println(result.toString());
+                break;
             }
 
             case "queryflight": {
@@ -146,7 +155,8 @@ class HandleRequest implements Runnable {
                 int id = toInt(arguments.elementAt(0));
 				int flightNum = toInt(arguments.elementAt(1));
                 //TODO : sent result to middleware
-                int result = rm.queryFlight(id, flightNum);
+                Integer result = rm.queryFlight(id, flightNum);
+                out.println(result.toString());
                 break;
             }
 
@@ -155,7 +165,8 @@ class HandleRequest implements Runnable {
                 int id = toInt(arguments.elementAt(0));
 				String location = arguments.elementAt(1);
                 //TODO : sent result to middleware
-                int result = rm.queryCars(id, location);
+                Integer result = rm.queryCars(id, location);
+                out.println(result.toString());
                 break;
             }
 
@@ -164,12 +175,19 @@ class HandleRequest implements Runnable {
                 int id = toInt(arguments.elementAt(0));
 				String location = arguments.elementAt(1);
                 //TODO : sent result to middleware
-                int result = rm.queryRooms(id, location);
+                Integer result = rm.queryRooms(id, location);
+                out.println(result.toString());
                 break;
             }
 
             case "querycustomer": {
-
+                checkArgumentsCount(2, arguments.size());
+                int id = toInt(arguments.elementAt(0));
+				int customerId = toInt(arguments.elementAt(1));
+                //TODO : sent result to middleware
+                String result = rm.queryCustomerInfo(id, customerId);
+                out.println(result);
+                break;
             }
 
             case "queryflightprice": {
@@ -177,25 +195,28 @@ class HandleRequest implements Runnable {
 				int id = toInt(arguments.elementAt(0));
                 int flightNum = toInt(arguments.elementAt(1));
                 //TODO : sent result to middleware
-				int result = rm.queryFlightPrice(id, flightNum);
+                Integer result = rm.queryFlightPrice(id, flightNum);
+                out.println(result.toString());
 				break;
             }
 
             case "querycarsprice": {
                 checkArgumentsCount(2, arguments.size());
 				int id = toInt(arguments.elementAt(0));
-                String location = toInt(arguments.elementAt(1));
+                String location = arguments.elementAt(1);
                 //TODO : sent result to middleware
-				int result = rm.queryCarsPrice(id, location);
+                Integer result = rm.queryCarsPrice(id, location);
+                out.println(result.toString());
 				break;
             }
 
             case "queryroomsprice": {
                 checkArgumentsCount(2, arguments.size());
 				int id = toInt(arguments.elementAt(0));
-                String location = toInt(arguments.elementAt(1));
+                String location = arguments.elementAt(1);
                 //TODO : sent result to middleware
-				int result = rm.queryRoomsPrice(id, location);
+                Integer result = rm.queryRoomsPrice(id, location);
+                out.println(result.toString());
 				break;
             }
 
@@ -205,7 +226,9 @@ class HandleRequest implements Runnable {
 				int customerID = toInt(arguments.elementAt(1));
 				int flightNum = toInt(arguments.elementAt(2));
                 //TODO : sent result to middleware
-				int result = rm.reserveFlight(id, customerID, flightNum);
+                Boolean result = rm.reserveFlight(id, customerID, flightNum);
+                out.println(result.toString());
+                break;
             }
 
             case "reservecar": {
@@ -214,7 +237,9 @@ class HandleRequest implements Runnable {
 				int customerID = toInt(arguments.elementAt(1));
                 String location = arguments.elementAt(2);
                 //TODO : sent result to middleware
-				boolean result = rm.reserveCar(id, customerID, location)) {
+                Boolean result = rm.reserveCar(id, customerID, location);
+                out.println(result.toString());
+                break;
             }
 
             case "reserveroom": {
@@ -223,10 +248,29 @@ class HandleRequest implements Runnable {
 				int customerID = toInt(arguments.elementAt(1));
 				String location = arguments.elementAt(2);
                 //TODO : sent result to middleware
-				boolean result = rm.reserveRoom(id, customerID, location)) {
+                Boolean result = rm.reserveRoom(id, customerID, location)) 
+                out.println(result.toString());
+                break;
             }
 
             case "bundle": {
+                if (arguments.size() < 6) {
+                    throw new IllegalArgumentException("Invalid number of arguments");
+                }
+                int id = toInt(arguments.elementAt(0));
+				int customerID = toInt(arguments.elementAt(1));
+                Vector<String> flightNumbers = new Vector<String>();
+                String [] flights = arguments.elementAt(2).split(",");
+				for (String flight : flights) {
+					flightNumbers.addElement(flight);
+				}
+				String location = arguments.elementAt(arguments.size() - 3);
+				boolean car = toBoolean(arguments.elementAt(arguments.size() - 2));
+                boolean room = toBoolean(arguments.elementAt(arguments.size() - 1));
+                
+                Boolean result = rm.bundle(id, customerID, flightNumbers, location, car, room);
+                out.println(result.toString());
+                break;
 
             }
 

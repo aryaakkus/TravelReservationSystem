@@ -239,7 +239,6 @@ public class RMIMiddleware extends ResourceManager {
 	// removeData(xid, customer.getKey());
 	// Trace.info("RM::deleteCustomer(" + xid + ", " + customerID + ") succeeded");
 	// return true;
-
 	// }
 	// }
 
