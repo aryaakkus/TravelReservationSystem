@@ -35,11 +35,12 @@ public class RMIResourceManager extends ResourceManager {
 			IResourceManager resourceManager = (IResourceManager) UnicastRemoteObject.exportObject(server, 0);
 
 			// Bind the remote object's stub in the registry
-			Registry l_registry;
+			Registry l_registry = null;
 			try {
-				l_registry = LocateRegistry.createRegistry(3031);
+				l_registry = LocateRegistry.getRegistry("lab2-30", 3031);
 			} catch (RemoteException e) {
-				l_registry = LocateRegistry.getRegistry(3031);
+				e.printStackTrace();
+				System.exit(1);
 			}
 			final Registry registry = l_registry;
 			registry.rebind(s_rmiPrefix + s_serverName, resourceManager);
