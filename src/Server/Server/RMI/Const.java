@@ -2,7 +2,7 @@ package Server.RMI;
 
 public class Const {
 
-    public static final String REGISTRY_HOST_NAME = "lab2-41";
+    public static final String REGISTRY_HOST_NAME = "localhost";
     public static final int REGISTRY_PORT = 3031;
 
     public static final String FLIGHT_SERVER_NAME = "Flights";
