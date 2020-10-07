@@ -15,9 +15,9 @@ import java.rmi.server.UnicastRemoteObject;
 public class RMIMiddleware extends ResourceManager {
 	private static String s_serverName = "Middleware";
 	private static String s_rmiPrefix = "group_31_";
-	private static String flights_servername = "Flights";
-	private static String car_servername = "Cars";
-	private static String rooms_servername = "Rooms";
+	private static String flights_host = "lab2-18";
+	private static String cars_host = "lab2-21";
+	private static String rooms_host = "lab2-22";
 
 	// add three different resource managers as attributes
 	private static IResourceManager carManager = null;
@@ -373,16 +373,16 @@ public class RMIMiddleware extends ResourceManager {
 	// connect three servers to middleware
 	public static void connectServers() {
 		// all connect to same registry
-		flightManager = connectServer(Const.REGISTRY_HOST_NAME, Const.REGISTRY_PORT, Const.FLIGHT_SERVER_NAME);
-		carManager = connectServer(Const.REGISTRY_HOST_NAME, Const.REGISTRY_PORT, Const.CAR_SERVER_NAME);
-		roomManager = connectServer(Const.REGISTRY_HOST_NAME, Const.REGISTRY_PORT, Const.ROOM_SERVER_NAME);
+		flightManager = connectServer(flights_host, Const.REGISTRY_PORT, Const.FLIGHT_SERVER_NAME);
+		carManager = connectServer(cars_host, Const.REGISTRY_PORT, Const.CAR_SERVER_NAME);
+		roomManager = connectServer(rooms_host, Const.REGISTRY_PORT, Const.ROOM_SERVER_NAME);
 	}
 
 	public static void main(String args[]) {
 		if (args.length >= 3) {
-			flights_servername = args[0];
-			car_servername = args[1];
-			rooms_servername = args[2];
+			flights_host = args[0];
+			cars_host = args[1];
+			rooms_host = args[2];
 		}
 
 		// Create the RMI server entry
@@ -397,9 +397,9 @@ public class RMIMiddleware extends ResourceManager {
 			// Bind the remote object's stub in the registry
 			Registry l_registry;
 			try {
-				l_registry = LocateRegistry.createRegistry(3031);
+				l_registry = LocateRegistry.createRegistry(3099);
 			} catch (RemoteException e) {
-				l_registry = LocateRegistry.getRegistry(3031);
+				l_registry = LocateRegistry.getRegistry(3099);
 			}
 			final Registry registry = l_registry;
 			registry.rebind(s_rmiPrefix + s_serverName, resourceManager);
