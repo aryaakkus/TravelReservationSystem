@@ -373,9 +373,9 @@ public class RMIMiddleware extends ResourceManager {
 	// connect three servers to middleware
 	public static void connectServers() {
 		// all connect to same registry
-		flightManager = connectServer(Const.REGISTRY_HOST_NAME, Const.REGISTRY_PORT, Const.FLIGHT_SERVER_NAME);
-		carManager = connectServer(Const.REGISTRY_HOST_NAME, Const.REGISTRY_PORT, Const.CAR_SERVER_NAME);
-		roomManager = connectServer(Const.REGISTRY_HOST_NAME, Const.REGISTRY_PORT, Const.ROOM_SERVER_NAME);
+		flightManager = connectServer(Const.REGISTRY_HOST_NAME, Const.REGISTRY_PORT, flights_servername);
+		carManager = connectServer(Const.REGISTRY_HOST_NAME, Const.REGISTRY_PORT, car_servername);
+		roomManager = connectServer(Const.REGISTRY_HOST_NAME, Const.REGISTRY_PORT, rooms_servername);
 	}
 
 	public static void main(String args[]) {
