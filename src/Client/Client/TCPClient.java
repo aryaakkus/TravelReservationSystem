@@ -7,8 +7,8 @@ import java.io.*;
 import java.net.*;
 
 public class TCPClient extends Client {
-    private static String s_serverHost = "localhost";
-    private static int s_serverPort = 3099;
+    private static String s_serverHost = "lab2-30";
+    private static int s_serverPort = 9031;
     private PrintWriter out;
     private Socket socket;
     // private static String s_rmiPrefix = "group_31_";

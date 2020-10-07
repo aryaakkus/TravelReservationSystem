@@ -10,8 +10,7 @@ import java.net.*;
 
 public class TCPResourceManager extends ResourceManager {
     private ServerSocket serverSocket;
-    private static String s_serverHost = "localhost";
-    private static int s_serverPort;
+    private static int s_serverPort = 10031;
     private static String s_serverName;
     private ExecutorService executor = Executors.newFixedThreadPool(15);
     private PrintStream out;
@@ -34,7 +33,8 @@ public class TCPResourceManager extends ResourceManager {
             }
 
         } catch (Exception e) {
-            // TODO: handle exception
+            System.out.println(e.getMessage());
+            System.exit(0);
         }
 
     }
