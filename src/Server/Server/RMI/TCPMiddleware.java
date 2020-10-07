@@ -15,9 +15,8 @@ public class TCPMiddleware extends ResourceManager {
     private Socket roomSocket;
 
     private static int flightPort = 10031;
-    private static int carPort = 11031;
-    private static int roomPort = 12031;
-    private static String s_serverHost = "localhost";
+    private static int carPort = 10031;
+    private static int roomPort = 10031;
     private static int s_serverPort = 9031;
     private String flightHostName;
     private String carHostName;
@@ -34,9 +33,9 @@ public class TCPMiddleware extends ResourceManager {
 
         if (args.length > 2) {
             middleware.flightHostName = args[0];
-            middleware.carHostName = args[0];
-            middleware.roomHostName = args[0];
-            s_serverPort = Integer.parseInt(args[1]);
+            middleware.carHostName = args[1];
+            middleware.roomHostName = args[2];
+
         } else {
             System.out.println("Not enough arguments for TCPMiddleware!");
             System.exit(0);
@@ -49,7 +48,8 @@ public class TCPMiddleware extends ResourceManager {
 
             while (true) {
                 Socket conn = middleware.serSocket.accept();
-                middleware.executor.submit(new HandleRequest(conn, middleware));
+                middleware.executor.submit(new HandleMiddlewareRequest(conn, middleware.flightSocket,
+                        middleware.carSocket, middleware.roomSocket, middleware));
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());

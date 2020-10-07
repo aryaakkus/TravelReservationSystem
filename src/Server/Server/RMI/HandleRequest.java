@@ -77,6 +77,18 @@ class HandleRequest implements Runnable {
                 out.println(result.toString());
                 break;
             }
+            case "addcars": {
+                checkArgumentsCount(4, arguments.size());
+                int id = toInt(arguments.elementAt(0));
+                String location = arguments.elementAt(1);
+                int numRooms = toInt(arguments.elementAt(2));
+                int price = toInt(arguments.elementAt(3));
+
+                Boolean result = rm.addCars(id, location, numRooms, price);
+                out.println(result.toString());
+                break;
+            }
+
             case "addrooms": {
                 checkArgumentsCount(5, arguments.size());
                 int id = toInt(arguments.elementAt(1));
@@ -144,7 +156,7 @@ class HandleRequest implements Runnable {
                 out.println(result.toString());
                 break;
             }
-
+//TODO: this is wrong
             case "deletecustomer": {
                 checkArgumentsCount(3, arguments.size());
                 int id = toInt(arguments.elementAt(1));
