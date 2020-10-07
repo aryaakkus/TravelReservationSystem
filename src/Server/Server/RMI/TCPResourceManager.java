@@ -69,8 +69,8 @@ class HandleRequest implements Runnable {
                 int flightNum = toInt(arguments.elementAt(1));
                 int flightSeats = toInt(arguments.elementAt(2));
                 int flightPrice = toInt(arguments.elementAt(3));
-
-                rm.addFlight(id, flightNum, flightSeats, flightPrice);
+                //TODO : sent result to middleware
+                boolean result = rm.addFlight(id, flightNum, flightSeats, flightPrice);
                 break;
             }
             case "addrooms": {
@@ -80,11 +80,12 @@ class HandleRequest implements Runnable {
                 int numRooms = toInt(arguments.elementAt(2));
                 int price = toInt(arguments.elementAt(3));
 
-                rm.addRooms(id, location, numRooms, price);
+                boolean result = rm.addRooms(id, location, numRooms, price);
                 break;
             }
 
             case "addcustomer": {
+                //will be use dn middleware
                 checkArgumentsCount(1, arguments.size());
                 int id = toInt(arguments.elementAt(0));
                 try {
@@ -110,15 +111,30 @@ class HandleRequest implements Runnable {
             }
 
             case "deleteflight": {
-
+                checkArgumentsCount(2, arguments.size());
+                int id = toInt(arguments.elementAt(0));
+                int flightNum = toInt(arguments.elementAt(1));
+                //TODO : sent result to middleware
+                boolean result = rm.deleteFlight(id, flightNum);
+                break;
             }
 
             case "deletecars": {
-
+                checkArgumentsCount(2, arguments.size());
+                int id = toInt(arguments.elementAt(0));
+                String location = toInt(arguments.elementAt(1));
+                //TODO : sent result to middleware
+                boolean result = rm.deleteCars(id, location);
+                break;
             }
 
             case "deleterooms": {
-
+                checkArgumentsCount(2, arguments.size());
+                int id = toInt(arguments.elementAt(0));
+                String location = toInt(arguments.elementAt(1));
+                //TODO : sent result to middleware
+                boolean result = rm.deleteRooms(id, location);
+                break;
             }
 
             case "deletecustomer": {
@@ -126,15 +142,30 @@ class HandleRequest implements Runnable {
             }
 
             case "queryflight": {
-
+                checkArgumentsCount(2, arguments.size());
+                int id = toInt(arguments.elementAt(0));
+				int flightNum = toInt(arguments.elementAt(1));
+                //TODO : sent result to middleware
+                int result = rm.queryFlight(id, flightNum);
+                break;
             }
 
             case "querycars": {
-
+                checkArgumentsCount(2, arguments.size());
+                int id = toInt(arguments.elementAt(0));
+				String location = arguments.elementAt(1);
+                //TODO : sent result to middleware
+                int result = rm.queryCars(id, location);
+                break;
             }
 
             case "queryrooms": {
-
+                checkArgumentsCount(2, arguments.size());
+                int id = toInt(arguments.elementAt(0));
+				String location = arguments.elementAt(1);
+                //TODO : sent result to middleware
+                int result = rm.queryRooms(id, location);
+                break;
             }
 
             case "querycustomer": {
@@ -142,27 +173,57 @@ class HandleRequest implements Runnable {
             }
 
             case "queryflightprice": {
-
+                checkArgumentsCount(2, arguments.size());
+				int id = toInt(arguments.elementAt(0));
+                int flightNum = toInt(arguments.elementAt(1));
+                //TODO : sent result to middleware
+				int result = rm.queryFlightPrice(id, flightNum);
+				break;
             }
 
             case "querycarsprice": {
-
+                checkArgumentsCount(2, arguments.size());
+				int id = toInt(arguments.elementAt(0));
+                String location = toInt(arguments.elementAt(1));
+                //TODO : sent result to middleware
+				int result = rm.queryCarsPrice(id, location);
+				break;
             }
 
             case "queryroomsprice": {
-
+                checkArgumentsCount(2, arguments.size());
+				int id = toInt(arguments.elementAt(0));
+                String location = toInt(arguments.elementAt(1));
+                //TODO : sent result to middleware
+				int result = rm.queryRoomsPrice(id, location);
+				break;
             }
 
             case "reserveflight": {
-
+                checkArgumentsCount(3, arguments.size());
+                int id = toInt(arguments.elementAt(0));
+				int customerID = toInt(arguments.elementAt(1));
+				int flightNum = toInt(arguments.elementAt(2));
+                //TODO : sent result to middleware
+				int result = rm.reserveFlight(id, customerID, flightNum);
             }
 
             case "reservecar": {
-
+                checkArgumentsCount(3, arguments.size());
+				int id = toInt(arguments.elementAt(0));
+				int customerID = toInt(arguments.elementAt(1));
+                String location = arguments.elementAt(2);
+                //TODO : sent result to middleware
+				boolean result = rm.reserveCar(id, customerID, location)) {
             }
 
             case "reserveroom": {
-
+                checkArgumentsCount(3, arguments.size());
+				int id = toInt(arguments.elementAt(0));
+				int customerID = toInt(arguments.elementAt(1));
+				String location = arguments.elementAt(2);
+                //TODO : sent result to middleware
+				boolean result = rm.reserveRoom(id, customerID, location)) {
             }
 
             case "bundle": {
