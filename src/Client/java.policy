@@ -1,3 +1,0 @@
-grant codebase "file:/c/Users/rozer/OneDrive/Desktop/TravelReservationSystem/src/Client/" {
-permission java.security.AllPermission;
-};
