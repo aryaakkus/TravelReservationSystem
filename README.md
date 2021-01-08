@@ -1,4 +1,5 @@
-# comp512-project
+# Travel Reservation System
+
 
 To run the RMI resource manager:
 
